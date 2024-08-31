@@ -1,3 +1,5 @@
+This is originally a school project, and it was originally in a private repository. The files are copied over, but the version history isn't. I'm currently learning React, and I plan on transforming this app using it.
+
 Introducing "Morsse" – a morse code learning platform where morse code beginners or amateurs can improve their skills by completing lessons of sending and receiving morse code signals. This app is for:
 
 -   Amateur Radio Enthusiasts needing practice for obtaining the license.
