@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{{#if darkmode}}
+	<link rel="stylesheet" href="{{ styles 'dark.css' }}">
+	{{else}}
+	<link rel="stylesheet" href="{{ styles 'light.css' }}">
+	{{/if}}
+	<link rel="stylesheet" type="text/css" href="{{ styles 'style.css' }}">
+	<title>Morsse</title>
+</head>
+
+<body>
+	<header>
+		<nav>
+			<a href="{{ path '' }}" style="gap: 1vw;">
+				<img src="{{ images 'telegraph.png' }}"><span>Morsse</span>
+			</a>
+			<div style="gap: 2vw;">
+				<a href="{{ path '' }}">Home</a>
+				{{#if userId}}
+				<a href="{{ path 'lessons' }}">Lessons</a>
+				<div id="header-menu-anchor">
+					<img src="{{ images 'hamburger.png' }}" id="hamburger">
+					<div id="header-menu">
+						<a href="{{ path 'users' }}/{{ userId }}">My Profile</a>
+						<a href="{{ path 'users' }}/{{ userId }}/edit">Settings</a>
+						<a href="{{ path 'lessons' }}?userId={{ userId }}">My Lessons</a>
+						<a href="{{ path 'lessons/new' }}">New Lesson</a>
+						<a href="{{ path 'logout' }}" style="color: var(--error-color);">Logout</a>
+					</div>
+				</div>
+				<script>
+					const headerMenuAnchor = document.getElementById('header-menu-anchor');
+					const headerMenu = document.getElementById('header-menu');
+					const headerMenuItems = headerMenu.children;
+
+					headerMenuAnchor.addEventListener('mouseenter', function () {
+						for (let i = 0; i < headerMenuItems.length; i++)
+							headerMenuItems[i].style.maxHeight = headerMenuItems[i].scrollHeight.toString() + 'px';
+					});
+
+					headerMenuAnchor.addEventListener('mouseleave', function () {
+						for (let i = 0; i < headerMenuItems.length; i++)
+							headerMenuItems[i].style.maxHeight = 0;
+					});
+				</script>
+				{{else}}
+				<a href="{{ path 'register' }}">Register</a>
+				<a href="{{ path 'login' }}">Login</a>
+				{{/if}}
+			</div>
+		</nav>
+	</header>
+	<main>

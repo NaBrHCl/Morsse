@@ -1,0 +1,176 @@
+{{> Header}}
+
+<style>
+    .help-button {
+        filter: var(--nav-filter);
+        cursor: pointer;
+
+        height: 1em;
+        aspect-ratio: 1;
+    }
+
+    .help-button:hover {
+        filter: var(--nav-filter) brightness(140%);
+    }
+
+    #darkmode-switch {
+        position: relative;
+
+        width: var(--width);
+        height: calc(var(--width) * var(--height-width-ratio));
+
+        --width: 2em;
+        --height-width-ratio: 0.6;
+        --ball-margin-width-ratio: 0.1;
+        --ball-width-width-ratio: 0.4;
+    }
+
+    #darkmode-switch input {
+        display: none;
+    }
+
+    #darkmode-switch span {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+
+        width: var(--width);
+        height: calc(var(--width) * var(--height-width-ratio));
+
+        border-radius: calc(var(--width) * var(--height-width-ratio) * 0.5);
+        background-color: #828282;
+        transition: 0.4s background-color;
+        cursor: pointer;
+    }
+
+    #darkmode-switch span:before {
+        position: absolute;
+        content: "";
+        left: calc(var(--width) * var(--ball-margin-width-ratio));
+        top: calc(var(--width) * var(--ball-margin-width-ratio));
+
+        width: calc(var(--width) * var(--ball-width-width-ratio));
+        height: calc(var(--width) * var(--ball-width-width-ratio));
+
+        border-radius: 50%;
+        background-color: #BDC0BA;
+        /* SHIRONEZUMI */
+
+        transition: 0.4s transform;
+    }
+
+    #darkmode-switch input:checked+span {
+        background-color: var(--nav-color);
+    }
+
+    #darkmode-switch input:checked+span:before {
+        transform: translateX(calc(var(--width) - var(--width) * var(--ball-width-width-ratio) - 2 * var(--width) * var(--ball-margin-width-ratio)));
+    }
+
+    #wpm-help-popup {
+        display: none;
+
+        background-color: var(--box-background);
+        border: 0.2em solid var(--box-border);
+        border-radius: 0.25em;
+        padding: 2em;
+
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+<link rel="stylesheet" href="{{ styles 'form.css' }}">
+
+<h4>User Profile</h4>
+
+{{#if error}}
+<div id="error" style="color: var(--error-color); margin-bottom: 1.5em">{{ error }}</div>
+{{/if}}
+
+{{#if message}}
+<div style="color: var(--message-color); margin-bottom: 1.5em">{{ message }}</div>
+{{/if}}
+
+<form id="edit-user-form" method="post" action="{{ path 'users' }}/{{ userId }}">
+    <input type="hidden" name="method" value="PUT">
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="{{ email }}" maxlength="100" required>
+    </div>
+
+    <div>
+        <label for="name">Username</label>
+        <input type="text" id="name" name="name" value="{{ name }}" maxlength="50" required>
+    </div>
+
+    <div>
+        <label for="password">Password</label>
+        <input type="text" id="password" name="password" maxlength="255">
+    </div>
+
+    <div>
+        <div style="display: flex; align-items: center; gap: 0.5em;">
+            <label for="wpm">WPM</label>
+            <img id="wpm-help-button" class="help-button" src="{{ images 'question.png' }}">
+        </div>
+        <input type="number" id="wpm" name="wpm" value="{{ wpm }}" min="1" step="1" max="60" required>
+    </div>
+
+    <div style="flex-direction: row; align-items: center">
+        <div>Dark Mode</div>
+        <label id="darkmode-switch" for="darkmode">
+            <input type="checkbox" id="darkmode" name="darkmode" {{#if darkmode}} checked {{/if}}>
+            <span></span>
+        </label>
+    </div>
+
+    <input type="submit" value="Edit" id="edit-user-form-submit-button">
+</form>
+
+<div id="wpm-help-popup">
+    (WPM) Words Per Minute determines speed of sending morse code. The greater WPM is, the faster
+    one transmits morse code, the shorter each dot, dash and space is. On this website, it can be set to a value between
+    1 and 60. The recommended value for beginner is between 10 and 16.
+</div>
+
+<script>
+    let wpmHelpDisplayed = false;
+    const wpmHelpButton = document.getElementById('wpm-help-button');
+    const wpmHelpPopup = document.getElementById('wpm-help-popup');
+    const nonWpmHelpPopupElements = document.querySelectorAll('body>*:not(main), main>*:not(#wpm-help-popup)');
+
+    nonWpmHelpPopupElements.forEach(function (element) {
+        element.style.transition = 'filter 0.4s';
+    });
+
+    document.body.addEventListener('click', function (event) {
+        if (wpmHelpDisplayed && event.target !== wpmHelpPopup && event.target !== wpmHelpButton) {
+            wpmHelpDisplayed = false;
+
+            event.preventDefault();
+
+            nonWpmHelpPopupElements.forEach(function (element) {
+                element.style.filter = '';
+            });
+
+            wpmHelpPopup.style.display = 'none';
+        }
+    });
+
+    wpmHelpButton.addEventListener('click', function () {
+        wpmHelpDisplayed = true;
+
+        nonWpmHelpPopupElements.forEach(function (element) {
+            element.style.filter = 'blur(0.25vh)';
+        });
+
+        wpmHelpPopup.style.display = 'block';
+    });
+</script>
+
+{{> Footer}}

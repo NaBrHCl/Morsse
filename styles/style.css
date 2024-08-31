@@ -1,0 +1,165 @@
+:root {
+    --nav-color: #376B6D;
+    /* OMESHICHA */
+
+    --nav-filter: brightness(0) saturate(100%) invert(35%) sepia(14%) saturate(1312%) hue-rotate(133deg) brightness(99%) contrast(85%);
+    /* OMESHICHA */
+
+    --error-color: #AB3B3A;
+    /* SHINSYU */
+
+    --error-filter: brightness(0) saturate(100%) invert(31%) sepia(11%) saturate(6991%) hue-rotate(328deg) brightness(86%) contrast(88%);
+
+    --message-color: #1B813E;
+    /* TOKIWA */
+
+    --message-filter: brightness(0) saturate(100%) invert(42%) sepia(18%) saturate(1706%) hue-rotate(88deg) brightness(91%) contrast(93%);
+}
+
+body {
+    color: var(--foreground-color);
+    background-color: var(--background-color);
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding-left: 10vw;
+    padding-right: 10vw;
+
+    min-height: 90vh;
+
+    font-size: x-large;
+}
+
+main {
+    margin-bottom: 10vh;
+}
+
+* {
+    transition: 0.1s outline;
+}
+
+*:focus {
+    outline: 0.2em solid #2E5C6E;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    color: var(--nav-color);
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+nav>* {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav>*:first-child {
+    font-size: 1.5em;
+}
+
+nav img {
+    height: 2em;
+    aspect-ratio: 1;
+}
+
+#header-menu-anchor {
+    position: relative;
+
+    --hamburger-width: 1.8em;
+}
+
+#hamburger {
+    filter: var(--nav-filter);
+    cursor: pointer;
+
+    height: calc(var(--hamburger-width) * 0.6);
+    padding: calc(var(--hamburger-width) * 0.2);
+    /* height is the same as width */
+}
+
+#header-menu {
+    position: absolute;
+    transform: translateX(calc(-50% + var(--hamburger-width) / 2));
+
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    width: min-content;
+
+    background-color: var(--box-background);
+    border: 0.2em solid var(--box-border);
+}
+
+#header-menu>* {
+    max-height: 0;
+    transition: 0.4s max-height;
+    
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+
+    text-align: center;
+}
+
+#header-menu>*:hover {
+    background-color: var(--box-border);
+}
+
+#header-menu-anchor:hover #header-menu {
+    display: flex;
+}
+
+nav a,
+nav a:visited,
+nav a:active {
+    color: var(--nav-color);
+    text-decoration: none;
+}
+
+a,
+a:visited,
+a:active {
+    color: grey;
+
+    cursor: pointer;
+}
+
+a:hover,
+a:active {
+    filter: brightness(120%);
+}
+
+#citation-switch {
+    text-decoration: underline;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+#citation-switch:hover {
+    filter: opacity(50%);
+}
+
+#citation {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+
+    gap: 1vh;
+
+    padding: 0;
+    transition: padding 0.4s;
+}
+
+#citation>* {
+    font-size: 0;
+    transition: font-size 0.4s;
+}

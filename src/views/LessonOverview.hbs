@@ -1,0 +1,82 @@
+{{> Header }}
+
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        gap: 4em;
+    }
+
+    .icon {
+        height: 1em;
+        aspect-ratio: 1;
+    }
+
+    #lesson-panel {
+        display: flex;
+        justify-content: space-between;
+        gap: 2em;
+
+        text-align: center;
+    }
+
+    #lesson-panel>* {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+
+        gap: 0.5em;
+    }
+
+    #lesson-panel>*>* {
+        width: 100%;
+    }
+
+    .button {
+        padding: 0.5em 4em;
+        border-radius: 0.25em;
+
+        text-decoration: none;
+		background-color: var(--box-border);
+        color: var(--foreground-color);
+    }
+</style>
+
+<div id="lesson-panel">
+    <div>
+        <h2>{{ lesson.title }}</h2>
+        <div style="display: flex; justify-content: space-between;">
+            <div>Difficulty</div>
+            <div>{{ difficulty lesson.difficulty }}</div>
+        </div>
+        <div>Completed by {{ lesson.completionCount }} user(s)</div>
+        <div>Created on {{ formatDate lesson.createdAt }}</div>
+    </div>
+    <div>
+        <h2>
+            {{#if completed}}
+            <img class="icon" style="filter: var(--message-filter);" src="{{ images 'check.png' }}">&nbsp;<span
+                style="color: var(--message-color)">Already completed</span>
+            {{else}}
+            <img class="icon" style="filter: var(--error-filter);" src="{{ images 'cross.png' }}">&nbsp;<span
+                style="color: var(--error-color)">Not completed yet</span>
+            {{/if}}
+        </h2>
+        <div style="display: flex; justify-content: space-evenly;">
+            <div>Created by</div>
+            <a href="{{ path 'users' }}/{{ lesson.userId }}">{{ creator.name }}</a>
+        </div>
+        {{#unless isCreator}}
+        <div>Reputation: {{ creator.reputation }}</div>
+        {{/unless}}
+    </div>
+</div>
+<div>
+    <a class="button" href="{{ path 'lessons' }}/{{ lesson.id }}">Start</a>
+</div>
+
+{{> Footer }}

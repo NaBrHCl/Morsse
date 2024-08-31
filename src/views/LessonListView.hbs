@@ -1,0 +1,85 @@
+{{> Header }}
+
+<link rel="stylesheet" href="{{ styles 'form.css' }}">
+
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    form {
+        flex-direction: row;
+        justify-content: space-around;
+
+        width: 100%;
+    }
+
+    input[type=submit] {
+        padding: 1em;
+    }
+
+    #lesson-list {
+        display: flex;
+        justify-content: space-around;
+        flex-flow: wrap;
+
+        width: 100%;
+        gap: 2em;
+    }
+
+    .lesson-card {
+        background-color: var(--box-background);
+        
+        border: 0.2em solid var(--box-border);
+        border-radius: 0.25em;
+
+        padding: 1em;
+
+        cursor: pointer;
+        text-decoration: none;
+    }
+</style>
+
+<form method="get" action="{{ path 'lessons' }}">
+    <div>
+        <label for="sortBy">Sort by</label>
+        <select id="sortBy" name="sortBy">
+            <option value="" selected>None</option>
+            <option value="difficulty">Difficulty</option>
+            <option value="completionCount">Completion Count</option>
+        </select>
+    </div>
+    <div>
+        <div style="display: flex; gap: 1em;">
+            <input type="radio" id="ascending" name="reversed" value="false" checked>
+            <label for="ascending">Ascending</label>
+        </div>
+        <div style="display: flex; gap: 1em;">
+            <input type="radio" id="descending" name="reversed" value="true">
+            <label for="descending">Descending</label>
+        </div>
+    </div>
+    <input type="submit" value="Apply">
+</form>
+<div>
+    {{#if lessons}}
+
+    <div id="lesson-list">
+        {{#each lessons}}
+        <a class="lesson-card" href="{{ path 'lessons' }}/{{ id }}/overview">
+            <div>{{ title }}</div>
+            <div>{{ difficulty difficulty }}</div>
+            <div>Completed by {{ completionCount }} users</div>
+        </a>
+        {{/each}}
+    </div>
+
+    {{else}}
+    <h1>No lessons found</h1>
+    {{/if}}
+</div>
+
+{{> Footer }}

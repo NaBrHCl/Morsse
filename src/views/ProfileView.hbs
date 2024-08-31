@@ -1,0 +1,155 @@
+{{> Header }}
+
+<style>
+	:root {
+		--error-color2: #86473F;
+	}
+
+	main {
+		display: flex;
+		flex-direction: column;
+
+		justify-content: space-evenly;
+		align-items: center;
+	}
+
+	main>*:not(:first-child) {
+		margin-top: 4em;
+	}
+
+	#profile {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-template-rows: repeat(3, 1fr);
+		grid-gap: 1em;
+
+		max-width: fit-content;
+	}
+
+	#profile>div {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.button {
+		padding: 0.5em 4em;
+		border-radius: 0.25em;
+
+		text-decoration: none;
+		color: var(--foreground-color);
+	}
+
+	#delete-button {
+		background-color: var(--error-color2);
+		/* KOKIAKE */
+	}
+
+	#settings-button {
+		background-color: var(--box-border);
+	}
+
+	#delete-confirmation-popup {
+		display: none;
+		margin: 0;
+
+		background-color: var(--box-background);
+		border: 0.2em solid var(--box-border);
+		border-radius: 0.25em;
+		padding: 2em;
+
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+
+		flex-direction: column;
+		justify-content: space-evenly;
+		align-items: center;
+		gap: 2em;
+	}
+</style>
+
+<div id="profile">
+	<div>
+		<div>Username</div>
+		<div>{{ user.name }}</div>
+	</div>
+	<div>
+		<div>Reputation</div>
+		<div>{{ user.reputation }}</div>
+	</div>
+	<div>
+		<div>Email</div>
+		<div>{{ user.email }}</div>
+	</div>
+	<div>
+		<div>Account Creation Date</div>
+		<div>{{ formatDate user.createdAt }}</div>
+	</div>
+	<div style="flex-direction: row; grid-column: span 2;">
+		<div>Lessons completed:&nbsp</div>
+		<div>{{ user.completionCount }}</div>
+	</div>
+</div>
+{{#if userId}}
+<div style="display: flex; justify-content: space-evenly; align-items: center; gap: 2em;">
+	<form id="delete-form" style="display: none;" method="post" action="{{ path 'users' }}/{{ userId }}">
+		<input type="hidden" name="method" value="DELETE">
+	</form>
+	<a class="button" id="delete-button">Delete</a>
+	<a class="button" id="settings-button" href="{{ path 'users' }}/{{ userId }}/edit">Modify</a>
+</div>
+{{/if}}
+<div id="delete-confirmation-popup">
+	<div>Are you sure you would like to delete your account?</div>
+	<div style="display: flex; justify-content: space-evenly; align-items: center; gap: 2em;">
+		<a id="delete-confirm" class="button" style="background-color: var(--error-color2);">Confirm</a>
+		<a id="delete-cancel" class="button" style="background-color: var(--box-border);">Cancel</a>
+	</div>
+</div>
+
+<script>
+	let deleteConfirmationDisplayed = false;
+	const deleteButton = document.getElementById('delete-button');
+	const deletePopup = document.getElementById('delete-confirmation-popup');
+	const nonDeletePopupElements = document.querySelectorAll('body>*:not(main), main>*:not(#delete-confirmation-popup)');
+
+	const deleteConfirmButton = document.getElementById('delete-confirm');
+	const deleteCancelButton = document.getElementById('delete-cancel');
+	const deleteForm = document.getElementById('delete-form');
+
+	nonDeletePopupElements.forEach(function (element) {
+		element.style.transition = 'filter 0.4s';
+	});
+
+	document.body.addEventListener('click', function (event) {
+		if (event.target === deleteConfirmButton) {
+			deleteForm.submit();
+		}
+
+		if (deleteConfirmationDisplayed && event.target !== deletePopup && event.target !== deleteButton) {
+			deleteConfirmationDisplayed = false;
+
+			event.preventDefault();
+
+			nonDeletePopupElements.forEach(function (element) {
+				element.style.filter = '';
+			});
+
+			deletePopup.style.display = 'none';
+		}
+	});
+
+	deleteButton.addEventListener('click', function () {
+		deleteConfirmationDisplayed = true;
+
+		nonDeletePopupElements.forEach(function (element) {
+			element.style.filter = 'blur(0.25vh)';
+		});
+
+		deletePopup.style.display = 'flex';
+	});
+</script>
+
+{{> Footer }}

@@ -1,0 +1,111 @@
+{{> Header }}
+
+<link rel="stylesheet" href="{{ styles 'form.css' }}">
+
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+
+        gap: 4em;
+    }
+
+    #morse-answer {
+        background-color: var(--box-background);
+        border: 0.2em solid var(--box-border);
+        border-radius: 0.25em;
+        padding: 1em;
+
+        min-width: 80%;
+    }
+
+    code {
+        background-color: var(--box-border);
+    }
+</style>
+
+<h4>{{ lesson.title }}</h4>
+
+<div>{{ lesson.message }}</div>
+<div style="display: flex; align-items: center; gap: 0.5em;">
+    <div>Please translate this to text:<br>"<code id="text-to-translate"></code>"</div>
+</div>
+<div style="display: flex; align-items: center; gap: 0.5em;">
+    <form id="submit-form" method="get" style="width: 100%; gap: 2em;" action="{{ path 'lessons' }}/{{ lesson.id }}/complete">
+        <input id="morse-answer" type="text" maxlength="255" required>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<script>
+    function characterToMorseCode(char) {
+        switch (char.toLowerCase()) {
+            case "a": return ".-";
+            case "b": return "-...";
+            case "c": return "-.-.";
+            case "d": return "-..";
+            case "e": return ".";
+            case "f": return "..-.";
+            case "g": return "--.";
+            case "h": return "....";
+            case "i": return "..";
+            case "j": return ".---";
+            case "k": return "-.-";
+            case "l": return ".-..";
+            case "m": return "--";
+            case "n": return "-.";
+            case "o": return "---";
+            case "p": return ".--.";
+            case "q": return "--.-";
+            case "r": return ".-.";
+            case "s": return "...";
+            case "t": return "-";
+            case "u": return "..-";
+            case "v": return "...-";
+            case "w": return ".--";
+            case "x": return "-..-";
+            case "y": return "-.--";
+            case "z": return "--..";
+            case "0": return "-----";
+            case "1": return ".----";
+            case "2": return "..---";
+            case "3": return "...--";
+            case "4": return "....-";
+            case "5": return ".....";
+            case "6": return "-....";
+            case "7": return "--...";
+            case "8": return "---..";
+            case "9": return "----.";
+            case ",": return "--..--";
+            case ".": return ".-.-.-";
+            case "!": return "-.-.--";
+            case "?": return "..--..";
+            case "\"": return ".-..-.";
+            case "'": return ".----.";
+            case "(": return "-.--.";
+            case ")": return "-.--.-";
+            default: return "";
+        }
+    }
+
+    function paragraphToMorseCode(paragraph) {
+        return paragraph.split(' ').map(word => Array.from(word).map(c => characterToMorseCode(c)).join(' ')).join(' / ');
+    }
+
+    const correctAnswer = '{{ lesson.text }}';
+    const answerElement = document.getElementById('morse-answer');
+
+    document.getElementById('text-to-translate').textContent = paragraphToMorseCode(correctAnswer);
+
+    document.getElementById('submit-form').addEventListener('submit', function (event) {
+        if (answerElement.value !== correctAnswer) {
+            event.preventDefault();
+
+            alert("Wrong answer, try again.");
+        }
+    });
+</script>
+
+{{> Footer }}

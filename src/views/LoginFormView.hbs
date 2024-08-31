@@ -1,0 +1,42 @@
+{{> Header}}
+
+<style>
+    #remember {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+    }
+</style>
+
+<link rel="stylesheet" href="{{ styles 'form.css' }}">
+
+<h3>Login</h3>
+
+{{#if error}}
+<div id="error" style="color: var(--error-color); margin-bottom: 1.5em">{{ error }}</div>
+{{/if}}
+
+{{#if message}}
+<div style="color: var(--message-color); margin-bottom: 1.5em">{{ message }}</div>
+{{/if}}
+
+<form id="login-form" method="post" action="{{ path 'login' }}">
+    <div>
+        <label for="usernameEmail">Username / Email</label>
+        <input type="text" id="usernameEmail" name="usernameEmail" value="{{ email }}" required autofocus>
+    </div>
+
+    <div>
+        <label for="password">Password</label>
+        <input type="text" id="password" name="password" required>
+    </div>
+
+    <div id="remember">
+        <input type="checkbox" id="rememberMe" name="remember" {{#if email}}checked{{/if}}>
+        <label for="rememberMe">Remember me</label>
+    </div>
+
+    <input type="submit" value="Login" id="login-form-submit-button">
+</form>
+
+{{> Footer}}

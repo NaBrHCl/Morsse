@@ -1,0 +1,73 @@
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form>div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.5em;
+    margin-bottom: 4vh;
+}
+
+form input,
+form textarea,
+form select {
+    padding: 0.75em;
+    border-radius: 0.25vw;
+
+    font-size: large;
+}
+
+form input[type]:not([type=submit]),
+form textarea,
+form select {
+    color: var(--foreground-color);
+    background-color: var(--box-background);
+
+    outline: var(--background-color);
+    border: 0.2em solid var(--box-border);
+    transition: 0.2s outline;
+}
+
+#description {
+    vertical-align: top;
+
+    min-height: 4em;
+    vertical-align: text-top;
+}
+
+form input[type]:not([type=submit]):focus,
+form textarea:focus {
+    outline: 0.15em solid #2E5C6E;
+}
+
+form input[type=checkbox], form input[type=radio] {
+    transform: scale(2);
+}
+
+form input[type=number]::-webkit-outer-spin-button,
+form input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+form input [type=number] {
+    -moz-appearance: textfield;
+}
+
+form input[type=submit] {
+    background-color: var(--nav-color);
+    color: #BDC0BA;
+    /* SHIRONEZUMI */
+
+    border: none;
+
+    transition: 0.2s filter;
+}
+
+form input[type=submit]:hover {
+    filter: brightness(90%);
+    cursor: pointer;
+}

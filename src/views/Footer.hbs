@@ -1,0 +1,39 @@
+</main>
+
+<cite>
+	<div id="citation-switch">Citation</div>
+	<div id="citation">
+		<a href="https://www.flaticon.com/free-icons/telegraph" title="telegraph icons">Telegraph icons created by
+			Freepik -
+			Flaticon</a>
+		<a href="https://www.flaticon.com/free-icons/hamburger" title="hamburger icons">Hamburger icons created by Lizel
+			Arina - Flaticon</a>
+		<a href="https://www.flaticon.com/free-icons/question" title="question icons">Question icons created by Freepik
+			-
+			Flaticon</a>
+		<a href="https://www.flaticon.com/free-icons/correct" title="correct icons">Correct icons created by Freepik -
+			Flaticon</a>
+		<a href="https://www.flaticon.com/free-icons/close" title="close icons">Close icons created by Freepik -
+			Flaticon</a>
+	</div>
+	<script>
+		const citation = document.getElementById('citation');
+		const citationLinks = citation.children;
+		let citationDisplayed = false;
+
+		document.getElementById('citation-switch').addEventListener('click', function () {
+			citationDisplayed = !citationDisplayed;
+
+			citation.style.padding = (citationDisplayed) ? '1em' : '0';
+
+			for (let i = 0; i < citationLinks.length; i++)
+				citationLinks[i].style.fontSize = (citationDisplayed) ? '1em' : '0';
+		});
+	</script>
+
+	<footer class="container"><small>&copy; Copyright 2024 NaBrHCl</small></footer>
+</cite>
+
+</body>
+
+</html>

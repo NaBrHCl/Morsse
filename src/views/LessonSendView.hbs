@@ -1,0 +1,247 @@
+{{> Header }}
+
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+
+        gap: 4em;
+    }
+
+    #morse-answer {
+        background-color: var(--box-background);
+        border: 0.2em solid var(--box-border);
+        border-radius: 0.25em;
+        padding: 1em;
+
+        min-width: 80%;
+    }
+
+    code {
+        background-color: var(--box-border);
+    }
+
+    .button {
+        background-color: var(--nav-color);
+        color: #BDC0BA;
+        /* SHIRONEZUMI */
+
+        border: none;
+
+        padding: 0.5em 2em;
+        border-radius: 0.2em;
+
+        transition: 0.2s filter;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        filter: brightness(120%);
+    }
+</style>
+
+<h4>{{ lesson.title }}</h4>
+
+<div>{{ lesson.message }}</div>
+<div style="display: flex; align-items: center; gap: 0.5em;">
+    <div id="morse-light" style="height: 1em; aspect-ratio: 1; background-color: var(--box-border)"></div>
+    <div>Please send this in morse code with the C key or spacebar:<br>"<code>{{ lesson.text }}</code>"</div>
+</div>
+<div id="morse-answer"></div>
+<div style="display: flex; align-items: center; gap: 0.5em;">
+    <a id="submit-button" style="text-decoration: none;" class="button"
+        href="{{ path 'lessons' }}/{{ lesson.id }}/complete">Submit</a>
+    <div class="button" onclick="reset();">Reset</div>
+</div>
+
+<script>
+    const T = 1200 / {{ wpm }};
+    // time unit used to keep track of morse coed signal length (1 T = n ms)
+    // dash -> 3T
+    // dot -> T
+    // inter-character space -> 3T
+    // word space -> 7T
+
+    function characterToMorseCode(char) {
+        switch (char.toLowerCase()) {
+            case "a": return ".-";
+            case "b": return "-...";
+            case "c": return "-.-.";
+            case "d": return "-..";
+            case "e": return ".";
+            case "f": return "..-.";
+            case "g": return "--.";
+            case "h": return "....";
+            case "i": return "..";
+            case "j": return ".---";
+            case "k": return "-.-";
+            case "l": return ".-..";
+            case "m": return "--";
+            case "n": return "-.";
+            case "o": return "---";
+            case "p": return ".--.";
+            case "q": return "--.-";
+            case "r": return ".-.";
+            case "s": return "...";
+            case "t": return "-";
+            case "u": return "..-";
+            case "v": return "...-";
+            case "w": return ".--";
+            case "x": return "-..-";
+            case "y": return "-.--";
+            case "z": return "--..";
+            case "0": return "-----";
+            case "1": return ".----";
+            case "2": return "..---";
+            case "3": return "...--";
+            case "4": return "....-";
+            case "5": return ".....";
+            case "6": return "-....";
+            case "7": return "--...";
+            case "8": return "---..";
+            case "9": return "----.";
+            case ",": return "--..--";
+            case ".": return ".-.-.-";
+            case "!": return "-.-.--";
+            case "?": return "..--..";
+            case "\"": return ".-..-.";
+            case "'": return ".----.";
+            case "(": return "-.--.";
+            case ")": return "-.--.-";
+            default: return "";
+        }
+    }
+
+    function paragraphToMorseCode(paragraph) {
+        return paragraph.split(' ').map(word => Array.from(word).map(c => characterToMorseCode(c)).join(' ')).join(' / ');
+    }
+
+    function isTrackedKey(key) {
+        return key === ' ' || key === 'c';
+    }
+
+    function startTimer() {
+        time = 0;
+
+        timerIntervalId = setInterval(function () {
+            time++;
+        }, 1);
+    }
+
+    function stopTimer() {
+        clearInterval(timerIntervalId);
+    }
+
+    function timeToSignal(ms) {
+        if (ms === 0)
+            return '';
+
+        if (ms <= T)
+            return '.';
+
+        return '-';
+    }
+
+    function lightOn() {
+        lightElement.style.filter = 'brightness(120%)';
+    }
+
+    function lightOff() {
+        lightElement.style.filter = '';
+    }
+
+    function appendMorseCharacter(c) {
+        characterBuffer += c;
+        answerElement.textContent += c;
+    }
+
+    function morseTrimRight(str) {
+        let charArray = Array.from(str);
+
+        while (true) {
+            if (charArray.length === 0)
+                return '';
+
+            let lastChar = charArray[charArray.length - 1];
+
+            if (lastChar === ' ' || lastChar === '/')
+                charArray.pop();
+            else
+                return charArray.join('');
+        }
+    }
+
+    function reset() {
+        clearInterval(timerIntervalId);
+        clearInterval(interCharacterSpaceTimeoutId);
+        clearInterval(spaceTimeoutId);
+
+        timerIntervalId = undefined;
+        interCharacterSpaceTimeoutId = undefined;
+        spaceTimeoutId = undefined;
+        time = 0;
+
+        characterBuffer = '';
+        answerElement.textContent = '';
+    }
+
+    const correctAnswer = paragraphToMorseCode('{{ lesson.text }}');
+    const answerElement = document.getElementById('morse-answer');
+    const lightElement = document.getElementById('morse-light');
+    let timerIntervalId = undefined;
+    let interCharacterSpaceTimeoutId = undefined;
+    let spaceTimeoutId = undefined;
+    let time = 0;
+
+    let characterBuffer = '';
+
+    document.addEventListener('keydown', function (event) {
+        if (isTrackedKey(event.key)) {
+            if (event.repeat)
+                return;
+
+            if (interCharacterSpaceTimeoutId !== undefined)
+                clearInterval(interCharacterSpaceTimeoutId);
+
+            if (spaceTimeoutId !== undefined)
+                clearInterval(spaceTimeoutId);
+
+            lightOn();
+            startTimer();
+        }
+
+    });
+
+    document.addEventListener('keyup', function (event) {
+        if (isTrackedKey(event.key)) {
+            lightOff();
+            stopTimer();
+
+            appendMorseCharacter(timeToSignal(time));
+
+            interCharacterSpaceTimeoutId = setTimeout(function () {
+                interCharacterSpaceTimeoutId = undefined;
+
+                appendMorseCharacter(' ');
+
+                spaceTimeoutId = setTimeout(function () {
+                    spaceTimeoutId = undefined;
+
+                    appendMorseCharacter('/ ');
+                }, 4 * T);
+            }, 3 * T);
+        }
+    });
+
+    document.getElementById('submit-button').addEventListener('click', function (event) {
+        if (morseTrimRight(answerElement.textContent) !== correctAnswer) {
+            event.preventDefault();
+
+            alert("Wrong answer, try again.");
+        }
+    });
+</script>
+
+{{> Footer }}
